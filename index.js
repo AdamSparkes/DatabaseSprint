@@ -5,7 +5,7 @@ const pool = new Pool({
   user: 'postgres', //This _should_ be your username, as it's the default one Postgres uses
   host: 'localhost',
   database: 'movie_database', //This should be changed to reflect your actual database
-  password: 'Creature1.', //This should be changed to reflect the password you used when setting up Postgres
+  password: 'definitelynotmypassword', //This should be changed to reflect the password you used when setting up Postgres
   port: 5432,
 });
 
