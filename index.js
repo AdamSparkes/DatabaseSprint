@@ -99,13 +99,13 @@ async function removeCustomer(customerId) {
  * Prints a help message to the console
  */
 function printHelp() {
-  console.log('Usage:');
-  console.log('  insert <title> <year> <genre> <director> - Insert a movie');
-  console.log('  show - Show all movies');
-  console.log('  update <customer_id> <new_email> - Update a customer\'s email');
-  console.log('  remove <customer_id> - Remove a customer from the database');
+  console.log('Reporting in Captain, all functionality for this program are shown below with formats included.');
+  console.log('  insert : This will allow you to insert a new movie- give the following parameters in exact order as follows <Title> <Year> <Genre> <Director>');
+  console.log('  show : This will give you a full report of all movies stored in the database Captain.');
+  console.log('  update : This will allow you to update one of the customers email, you must first give the ID, then the new email. example being <1> <Captain@gmail.com>');
+  console.log('  remove : This will allow you to purge a customer from our databse, filthy heathen.');
 }
-
+//<customer_id> <new_email>
 /**
  * Runs our CLI app to manage the movie rentals database
  */
