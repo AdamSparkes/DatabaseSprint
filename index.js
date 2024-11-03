@@ -53,12 +53,27 @@ async function createTable() {
  * @param {string} director Director of the movie
  */
 async function insertMovie(title, year, genre, director) {
-  await pool.query(
-    `INSERT INTO Movies (title, release_year, genre, director) VALUES ($1, $2, $3, $4)`,
-    [title, year, genre, director]
-  );
-  console.log(`Movie "${title}" added successfully.`);
-};
+  if (!title || !genre || !director) {
+    console.error("Error: Title, genre, and director are required fields.");
+    return;
+  }
+  
+  // Check if the year is a 4-digit number
+  if (!/^\d{4}$/.test(year)) { // A Regular expression to ensure that the year is input as a 4 digit long number.
+    console.error("Error: Year must be a 4-digit number.");
+    return;
+  }
+
+  try {
+    await pool.query(
+      `INSERT INTO Movies (title, release_year, genre, director) VALUES ($1, $2, $3, $4)`,
+      [title, year, genre, director]
+    );
+    console.log(`Movie "${title}" added successfully.`);
+  } catch (error) {
+    console.error("Error inserting movie:", error.message);
+  }
+}
 
 /**
  * Prints all movies in the database to the console
@@ -76,23 +91,60 @@ async function displayMovies() {
  * @param {string} newEmail New email address of the customer
  */
 async function updateCustomerEmail(customerId, newEmail) {
-  await pool.query(
-    `UPDATE Customers SET email = $1 WHERE customer_id = $2`,
-    [newEmail, customerId]
-  );
-  console.log(`Customer ID ${customerId}'s email updated successfully.`);
-};
+  if (isNaN(customerId) || customerId <= 0) {
+    console.error("Error: Customer ID must be a positive integer.");
+    return;
+  }
+
+  try {
+    //Uses a simple validation to confirm the customer ID exists, if not throws and error. 
+    const customerCheck = await pool.query(
+      `SELECT customer_id FROM Customers WHERE customer_id = $1`,
+      [customerId]
+    );
+
+    if (customerCheck.rows.length === 0) {
+      console.log(`Error: No customer found with ID ${customerId}.`);
+      return;
+    }
+
+    
+    const res = await pool.query(
+      `UPDATE Customers SET email = $1 WHERE customer_id = $2`,
+      [newEmail, customerId]
+    );
+    console.log(`Customer ID ${customerId}'s email updated successfully.`);
+  } catch (error) {
+    console.error("Error updating customer email:", error.message);
+  }
+}
 
 /**
  * Removes a customer from the database along with their rental history.
  * 
  * @param {number} customerId ID of the customer to remove
  */
-async function removeCustomer(customerId) {
-  await pool.query('DELETE FROM Rentals WHERE customer_id = $1', [customerId]);
-  await pool.query('DELETE FROM Customers WHERE customer_id = $1', [customerId]);
-  console.log(`Customer ID ${customerId} and their rental history removed successfully.`);
-}
+async function removeCustomer(customerId) { 
+    
+    if (isNaN(customerId) || customerId <= 0) {
+      console.error("Error: Customer ID must be a positive integer.");
+      return;
+    }
+  
+    try {
+      await pool.query('DELETE FROM Rentals WHERE customer_id = $1', [customerId]);
+      const res = await pool.query('DELETE FROM Customers WHERE customer_id = $1', [customerId]);
+      
+      if (res.rowCount === 0) {
+        console.log(`No customer found with ID ${customerId}.`);
+      } else {
+        console.log(`Customer ID ${customerId} and their rental history removed successfully.`);
+      }
+    } catch (error) {
+      console.error("Error removing customer:", error.message);
+    }
+  }
+  
 
 
 /**
@@ -103,7 +155,7 @@ function printHelp() {
   console.log('  insert : This will allow you to insert a new movie- give the following parameters in exact order as follows <Title> <Year> <Genre> <Director>');
   console.log('  show : This will give you a full report of all movies stored in the database Captain.');
   console.log('  update : This will allow you to update one of the customers email, you must first give the ID, then the new email. example being <1> <Captain@gmail.com>');
-  console.log('  remove : This will allow you to purge a customer from our databse, filthy heathen.');
+  console.log('  remove : This will allow you to purge a customer from our database, filthy heathen.');
 }
 //<customer_id> <new_email>
 /**
