@@ -1,0 +1,14 @@
+Movies Table:
+The movies table is in 3NF Due to the lack of any trasitive dependencies, all attributes within the table are only dependant on the primary key movie_id. 
+No othe attribute relies on another attribute withing the table aside from the primary key.
+
+Customers Table:
+The customers table is in 3NF for the same reasons as the Movies table. Where it has customer_id as it's primary key, no other attributes are dependant on
+the non-key attributes within the table, having an incremental primary key helps in organizing information within the table to be exclusively dependant on
+the primary key.
+
+Rentals Table:
+The Rentals table is in 3NF due to no trasitive dependencies existing. All non-key attributes only depends on the rental_id.
+
+Overall- the tables in this database were each given a serial primary key which all attributes within the table relied on exclusively, not having any attributes
+dependant on other attributes that are not the serial primary key.
