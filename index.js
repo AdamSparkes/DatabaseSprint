@@ -38,7 +38,7 @@ async function createTable() {
       return_date DATE
     );
   `);
-  console.log('Mission accomplished Captain, tables have been established.');
+  console.log('Mission accomplished Captain, connection to tables has been established.');
 }
 
  
@@ -89,8 +89,11 @@ async function updateCustomerEmail(customerId, newEmail) {
  * @param {number} customerId ID of the customer to remove
  */
 async function removeCustomer(customerId) {
-  // TODO: Add code to remove a customer and their rental history
-};
+  await pool.query('DELETE FROM Rentals WHERE customer_id = $1', [customerId]);
+  await pool.query('DELETE FROM Customers WHERE customer_id = $1', [customerId]);
+  console.log(`Customer ID ${customerId} and their rental history removed successfully.`);
+}
+
 
 /**
  * Prints a help message to the console
